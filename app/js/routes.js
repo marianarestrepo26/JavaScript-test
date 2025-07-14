@@ -16,7 +16,7 @@ const routes = {
     '#/enrollments' : enrollmentsView(),
 };
 
-export function routes() {
+export function router() {
     const path = window.location.hash || '#/';
     const mainContent = document.getElementById('main-content');
     const view = routes[path];
@@ -43,4 +43,4 @@ export function routes() {
     }
 }
 
-window.addEventListener('popstate', routes);
+window.addEventListener('popstate', router);
