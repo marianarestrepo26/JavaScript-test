@@ -5,7 +5,7 @@ export function dashboardView(container) {
         <div class="nav-left">
           <ul>
             <li><a href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>
-            <li><a href="#/dashboard" data-link="dashboard">Events</a></li>
+            <li><a href="#/" data-link="dashboard">Events</a></li>
             <li><a href="#/login" data-link="login">Logout</a></li>
           </ul>
         </div>

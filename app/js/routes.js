@@ -1,6 +1,6 @@
+import dashboardView from "./views/dashboard";
 import loginView from "./views/login";
 import registerView from "./views/register";
-import dashboardView from "./views/dashboard";
 import {editorView , createView} from "./views/editorEvents";
 import enrollmentsView from "./views/enrollments";
 import notFound from "./views/notFound";
@@ -8,16 +8,16 @@ import notFound from "./views/notFound";
 import { isAuthenticated } from "./auth"
 
 const routes = {
-    '#/' : dashboardView,
-    '#/login' : loginView,
-    '#/register' : registerView,
-    '#/dashboard/events/edit' : editorView,
-    '#/dashboard/events/create' : createView,
-    '#/enrollments' : enrollmentsView,
+    '#/' : dashboardView(),
+    '#/login' : loginView(),
+    '#/register' : registerView(),
+    '#/dashboard/events/edit' : editorView(),
+    '#/dashboard/events/create' : createView(),
+    '#/enrollments' : enrollmentsView(),
 };
 
 export function routes() {
-    const path = window.location.pathname;
+    const path = window.location.hash || '#/';
     const mainContent = document.getElementById('main-content');
     const view = routes[path];
 

@@ -1,6 +1,6 @@
-import routes from "./app/js/routes";
+import {routes} from "./app/js/routes.js";
 
-window.addEventListener('DOMContentLoaded', routes);
+window.addEventListener('DOMContentLoaded', routes());
 
 document.addEventListener('click', (evt) => {
   if (evt.target.matches('a[data-link]')){
