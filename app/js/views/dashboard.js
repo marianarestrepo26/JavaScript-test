@@ -6,13 +6,16 @@ export default function dashboardView(container) {
 
   container.innerHTML = `    
     <div class="dashboard">
-      <section class="nav">
-        <div class="nav-left">
-          <ul>
-            <li><a href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>
-            <li><a href="#/" data-link="dashboard">Events</a></li>
-            <li><a href="#/login" data-link="login" id='logout'>Logout</a></li>
-          </ul>
+      <section class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <ul>
+                    <img src=https://api.dicebear.com/9.x/avataaars/svg?seed={username}" alt="Avatar">
+                    <li><a class="navbar-item" href="#/" data-link="dashboard">Events</a></li>
+                    <li><a class="navbar-item" href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>
+                    <li><a class="navbar-item" href="#/login" data-link="login" id='logout'>Logout</a></li>
+                </ul>
+            </div>
         </div>
       </section>
       <section>
@@ -35,16 +38,35 @@ export default function dashboardView(container) {
   });
 
   const eventsList = document.getElementById("eventsList");
+
   getData("events")
     .then((events) => {
       eventsList.innerHTML = events
-        .map((event) => ( `
-          <div class="event">
-            <h3>${event.name}</h3> <p>${event.description}</p>
-            <p>${event.date}</p> <p>${event.capacity}</p>
-          </div>`
-        ))
+        .map((event) => {
+          const editButton =
+            user.role === "admin"
+              ? `<button class="edit-btn" data-event='${JSON.stringify(
+                  event
+                )}'>Editar</button>`
+              : "";
+
+          return `
+            <div class="event">
+              <h3>${event.name}</h3> <p>${event.description}</p>
+              <p>${event.date}</p> <p>${event.capacity}</p>
+              ${editButton}
+            </div>`;
+        })
         .join("");
+
+      // Agregar funcionalidad al botón de editar
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const eventData = JSON.parse(btn.dataset.event);
+          localStorage.setItem("eventoAEditar", JSON.stringify(eventData));
+          window.location.hash = "#/editorView";
+        });
+      });
     })
     .catch(() => {
       eventsList.textContent = "Error cargando eventos";
