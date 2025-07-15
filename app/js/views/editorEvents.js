@@ -1,66 +1,83 @@
-import { createData } from '../API/API.js';
 import { router } from "../routes.js";
 
-export function editorView(container) {
-  const eventToEdit = JSON.parse(localStorage.getItem("eventEdit")) || {};
+export function formEventView(container) {
+  const eventToEdit = JSON.parse(localStorage.getItem("eventEdit")) || null;
+  const isEditing = !!eventToEdit;
 
   container.innerHTML = `
-    <div class="editor">
-      <section class="nav">
-        <div class="nav-left">
-          <ul>
-            <li><a href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>
+    <div class="columns is-gapless" style="height: 100vh;">
+      <aside class="column is-2 has-background-light p-4">
+        <nav class="menu">
+          <ul class="menu-list">
             <li><a href="#/" data-link="dashboard">Events</a></li>
+            ${getUser().role === 'visitor' ? '<li><a href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>' : ''}
             <li><a href="#/login" data-link="login" id="logout">Logout</a></li>
           </ul>
-        </div>  
-      </section>
-      <section>
-        <form id="eventForm">
-          <div class="input-event">
-              <label for="name-event">Name</label>
-              <input type="text" name="name-event" id="name-event" value="${eventToEdit.name || ''}">
-              
-              <label for="description-event">Description</label>
-              <input type="text" name="description-event" id="description-event" value="${eventToEdit.description || ''}">
-              
-              <label for="date-event">Date</label>
-              <input type="date" name="date-event" id="date-event" value="${eventToEdit.date || ''}">
-              
-              <label for="capacity-event">Capacity</label>
-              <input type="number" name="capacity-event" id="capacity-event" value="${eventToEdit.capacity || ''}">
+        </nav>
+      </aside>
+
+      <main class="column p-5">
+        <h2 class="title is-4">${isEditing ? 'Edit Event' : 'Create Event'}</h2>
+        <form id="eventForm" class="box">
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input class="input" type="text" id="name-event" value="${eventToEdit?.name || ''}" required>
+            </div>
           </div>
-          <div class="btns-create">
-              <button type="button" id="cancel">Cancel</button>
-              <button type="submit" id="save">Save</button>
+          
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <input class="input" type="text" id="description-event" value="${eventToEdit?.description || ''}" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Date</label>
+            <div class="control">
+              <input class="input" type="date" id="date-event" value="${eventToEdit?.date || ''}" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Capacity</label>
+            <div class="control">
+              <input class="input" type="number" id="capacity-event" value="${eventToEdit?.capacity || ''}" required>
+            </div>
+          </div>
+
+          <div class="field is-grouped mt-5">
+            <div class="control">
+              <button class="button is-link" type="submit">${isEditing ? 'Update' : 'Create'}</button>
+            </div>
+            <div class="control">
+              <button class="button is-light" type="button" id="cancel">Cancel</button>
+            </div>
           </div>
         </form>
-      </section>
-    </div>`;
+      </main>
+    </div>
+  `;
 
-  const form = document.getElementById("eventForm");
-
-  form.addEventListener("submit", async (e) => {
+  document.getElementById("logout").addEventListener("click", (e) => {
     e.preventDefault();
+    logoutUser();
+  });
+
+  document.getElementById("eventForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     const newEvent = {
-      name: form["name-event"].value,
-      description: form["description-event"].value,
-      date: form["date-event"].value,
-      capacity: parseInt(form["capacity-event"].value),
+      name: document.getElementById("name-event").value.trim(),
+      description: document.getElementById("description-event").value.trim(),
+      date: document.getElementById("date-event").value,
+      capacity: parseInt(document.getElementById("capacity-event").value)
     };
 
     try {
-      // Si existe un ID, sería una edición, si no, una creación
-      if (eventToEdit.id) {
-        // Puedes usar tu método updateData aquí si lo tienes
-        const response = await fetch(`http://localhost:3000/events/${eventToEdit.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(newEvent)
-        });
-        if (!response.ok) throw new Error();
+      if (isEditing) {
+        await updateData("events", newEvent, eventToEdit.id);
       } else {
         await createData("events", newEvent);
       }
@@ -68,8 +85,8 @@ export function editorView(container) {
       localStorage.removeItem("eventEdit");
       window.location.hash = "#/";
       router();
-    } catch {
-      alert("Error al guardar el evento");
+    } catch (error) {
+      alert("Error saving event");
     }
   });
 
@@ -78,40 +95,4 @@ export function editorView(container) {
     window.location.hash = "#/";
     router();
   });
-}
-
-export function createView(container) {
-  container.innerHTML = `
-    <div class="editor">
-      <section class="nav">
-        <div class="nav-left">
-          <ul>
-            <li><a href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>
-            <li><a href="#/" data-link="dashboard">Events</a></li>
-            <li><a href="#/login" data-link="login" id="logout">Logout</a></li>
-          </ul>
-        </div>  
-      </section>
-      <section>
-        <form id="eventForm">
-          <div class="input-event">
-              <label for="name-event">Name</label>
-              <input type="text" name="name-event" id="name-event" value="${eventToEdit.name || ''}">
-              
-              <label for="description-event">Description</label>
-              <input type="text" name="description-event" id="description-event" value="${eventToEdit.description || ''}">
-              
-              <label for="date-event">Date</label>
-              <input type="date" name="date-event" id="date-event" value="${eventToEdit.date || ''}">
-              
-              <label for="capacity-event">Capacity</label>
-              <input type="number" name="capacity-event" id="capacity-event" value="${eventToEdit.capacity || ''}">
-          </div>
-          <div class="btns-create">
-              <button type="button" id="cancel">Cancel</button>
-              <button type="submit" id="save">Save</button>
-          </div>
-        </form>
-      </section>
-    </div>`;
 }
