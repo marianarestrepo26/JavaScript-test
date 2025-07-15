@@ -1,46 +1,49 @@
-import dashboardView from "./views/dashboard";
-import loginView from "./views/login";
-import registerView from "./views/register";
-import {editorView , createView} from "./views/editorEvents";
-import enrollmentsView from "./views/enrollments";
-import notFound from "./views/notFound";
+import dashboardView from "./views/dashboard.js";
+import { loginView } from "./views/login.js";
+import { registerView} from "./views/register.js";
+import { editorView, createView} from "./views/editorEvents.js";
+import { enrollmentsView } from "./views/enrollments.js";
+import notFound from "./views/notFound.js";
 
-import { isAuthenticated } from "./auth"
+import { isAuthenticated } from "./auth.js";
 
 const routes = {
-    '#/' : dashboardView(),
-    '#/login' : loginView(),
-    '#/register' : registerView(),
-    '#/dashboard/events/edit' : editorView(),
-    '#/dashboard/events/create' : createView(),
-    '#/enrollments' : enrollmentsView(),
+'#/': dashboardView,
+'#/login': loginView,
+'#/register': registerView,
+'#/dashboard/events/edit': editorView,
+'#/dashboard/events/create': createView,
+'#/dashboard/events/enrollments': enrollmentsView,
+'#/not-found': notFound,
 };
 
 export function router() {
-    const path = window.location.hash || '#/';
-    const mainContent = document.getElementById('main-content');
-    const view = routes[path];
+const path = window.location.hash || '#/';
+const mainContent = document.getElementById('main-content');
+const view = routes[path];
 
-    const protectedRoutes = ['/', '/dashboard/events/create', '/dashboard/events/edit', '/enrollments']
+const protectedRoutes = [
+'#/',
+'#/dashboard/events/create',
+'#/dashboard/events/edit',
+'#/dashboard/events/enrollments',
+];
 
-    if (protectedRoutes.includes(path) && !isAuthenticated()) {
-        history.pushState({}, '' , '/not-found');
-        notFound(mainContent);
-        return;
-    }
+if (protectedRoutes.includes(path) && !isAuthenticated()) {
+window.location.hash = '#/not-found';
+return;
+}
 
-    if ((path === '/login' || path === '/register') && isAuthenticated()) {
-        history.pushState({}, '', '/');
-        dashboardView(mainContent);
-        return;
-    }
+if ((path === '#/login' || path === '#/register') && isAuthenticated()) {
+window.location.hash = '#/';
+return;
+}
 
-    if(view) {
-        view(mainContent);
-    } else {
-        history.pushState({}, '', '/not-found');
-        notFound(mainContent);
-    }
+if (view) {
+view(mainContent);
+} else {
+window.location.hash = '#/not-found';
+}
 }
 
 window.addEventListener('popstate', router);

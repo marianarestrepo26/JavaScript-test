@@ -1,4 +1,9 @@
-export function dashboardView(container) { 
+import { getUser, logoutUser } from "../auth.js";
+import { getData } from "../API/API.js";
+
+export default function dashboardView(container) {
+  const user = getUser();
+
   container.innerHTML = `    
     <div class="dashboard">
       <section class="nav">
@@ -6,13 +11,7 @@ export function dashboardView(container) {
           <ul>
             <li><a href="#/dashboard/events/enrollments" data-link="enrollments">Enrollments</a></li>
             <li><a href="#/" data-link="dashboard">Events</a></li>
-            <li><a href="#/login" data-link="login">Logout</a></li>
-          </ul>
-        </div>
-        <div class="nav-right">
-          <ul>
-            <li><a href="#">Bloh</a></li>
-            <li><a href="#">Bloh</a></li>
+            <li><a href="#/login" data-link="login" id='logout'>Logout</a></li>
           </ul>
         </div>
       </section>
@@ -26,6 +25,28 @@ export function dashboardView(container) {
             <div class="capacity-event">Capacity</div>
             <div class="date-event">Date</div>
         </div>
+        <div class="event" id="eventsList"></div>
       </section>
     </div>`;
+
+  document.getElementById("logout").addEventListener("click", (e) => {
+    e.preventDefault();
+    logoutUser();
+  });
+
+  const eventsList = document.getElementById("eventsList");
+  getData("events")
+    .then((events) => {
+      eventsList.innerHTML = events
+        .map((event) => ( `
+          <div class="event">
+            <h3>${event.name}</h3> <p>${event.description}</p>
+            <p>${event.date}</p> <p>${event.capacity}</p>
+          </div>`
+        ))
+        .join("");
+    })
+    .catch(() => {
+      eventsList.textContent = "Error cargando eventos";
+    });
 }

@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Mariana Restrepo",
+      "email": "mariana@restrepo.com",
+      "password": "mariana",
+      "rol": "admin"
+    },
+    {
+      "id": "2",
+      "name": "Julian Restrepo",
+      "email": "julian@restrepo.com",
+      "password": "julian",
+      "rol": "visitor"
+    },
+    {
+      "id": "bea9",
+      "name": "maria",
+      "email": "mari@gmail.com",
+      "password": "mariana",
+      "rol": "visitor"
+    }
+  ],
+  "events": [
+    {
+      "id": "3",
+      "name": "Mariana's Birthday",
+      "description": "Una fiesta divertida",
+      "date": "2025-07-14",
+      "capacity": 5
+    }
+  ]
+}

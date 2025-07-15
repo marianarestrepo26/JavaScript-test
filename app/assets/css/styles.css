@@ -1,0 +1,17 @@
+.login-box, .register-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.init-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page, .login-container, .login-wrapper{
+    width: 100vh;
+}

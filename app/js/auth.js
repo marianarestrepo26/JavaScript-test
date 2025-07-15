@@ -13,6 +13,6 @@ export function loginUser(userData) {
 
 export function logoutUser() {
     localStorage.removeItem('user');
-    window.history.pushState({}, '', '/login');
+    window.location.hash = '#/login';
     location.reload()
 }

@@ -13,7 +13,8 @@ export const getData = async (ENDPOINT) => {
   return fetch(`${URL}/${ENDPOINT}`)
     .then(checkResponse)  
     .then(response => response.json());
-};
+  };
+  console.log(getData);
 
 export const createData = async (ENDPOINT, data) => {
   return fetch(`${URL}/${ENDPOINT}`, {
